@@ -82,6 +82,16 @@ def get_folder_id(folder_name, url, token, verify):
     print(colored('ERROR!', 'red', attrs = ['reverse', 'bold']) + ' Folder "' + folder_name + '" not found.')
     sys.exit(1)
 
+def get_scan_id(scan_name, url, token, verify):
+    scans = requests.get(url + '/scans', params = {'folder_id': folder_id}, headers = {'X-Cookie': 'token=' + token}, verify = verify).json()
+
+    for scan in scans['folders']:
+        if scan['name'] == scan_name:
+            return scan['id']
+
+    print(colored('ERROR!', 'red', attrs = ['reverse', 'bold']) + ' Scan "' + scan_name + '" not found.')
+    sys.exit(1)
+
 def main(argv):
     parser = argparse.ArgumentParser()
     parser.add_argument('--host', help = 'The host (IP or hostname) where Nessus is running on', required = True)
