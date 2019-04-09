@@ -64,13 +64,16 @@ def list_scans(folder, url, token, verify):
     scans = requests.get(url + '/scans', params = {'folder_id': folder_id}, headers = {'X-Cookie': 'token=' + token}, verify = verify).json()
     scans_names = []
 
-    for scan in scans['scans']:
-        scans_names.append(scan['name'])
+    if not scans['scans']:
+        print('[+] Folder "' + folder + '" is empty')
+    else:
+        for scan in scans['scans']:
+            scans_names.append(scan['name'])
 
-    print('[+] Listing ' + str(len(scans_names)) + ' scans from folder "' + folder + '"...')
+        print('[+] Listing ' + str(len(scans_names)) + ' scans from folder "' + folder + '"...')
 
-    for scan in sorted(scans_names):
-        print('[+]   ' + colored(scan, 'white', attrs = ['bold']))
+        for scan in sorted(scans_names):
+            print('[+]   ' + colored(scan, 'white', attrs = ['bold']))
 
 def get_folder_id(folder_name, url, token, verify):
     folders = requests.get(url + '/folders', headers = {'X-Cookie': 'token=' + token}, verify = verify).json()
