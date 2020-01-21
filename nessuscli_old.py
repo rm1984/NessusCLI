@@ -85,7 +85,7 @@ def get_folder_id(folder_name, url, token, verify):
     print(colored('ERROR!', 'red', attrs = ['reverse', 'bold']) + ' Folder "' + folder_name + '" not found.')
     sys.exit(1)
 
-def get_scan_id(scan_name, folder_id, url, token, verify):
+def get_scan_id(scan_name, url, token, verify):
     scans = requests.get(url + '/scans', params = {'folder_id': folder_id}, headers = {'X-Cookie': 'token=' + token}, verify = verify).json()
 
     for scan in scans['folders']:
@@ -95,9 +95,8 @@ def get_scan_id(scan_name, folder_id, url, token, verify):
     print(colored('ERROR!', 'red', attrs = ['reverse', 'bold']) + ' Scan "' + scan_name + '" not found.')
     sys.exit(1)
 
-def get_scan_status(folder_name, scan_name, url, token, verify):
-    folder_id = get_folder_id(folder_name, url, token, verify)
-    scan_id = get_scan_id(scan_name, folder_id, url, token, verify)
+def get_scan_status(scan_name, url, token, verify):
+    scan_id = get_scan_id(scan_name, url, token, verify)
 
     return requests.get(url + '/scans/' + str(scan_id), headers={'X-Cookie': 'token=' + token}, verify = verify).json()['info']['status']
 
@@ -153,7 +152,7 @@ def main(argv):
         list_scans(folder, url, token, verify)
 
     if scan:
-        print(get_scan_status(folder, scan, url, token, verify))
+        get_scan_status(scan, url, token, verify)
 
 if __name__ == '__main__':
     signal.signal(signal.SIGINT, signal_handler)
